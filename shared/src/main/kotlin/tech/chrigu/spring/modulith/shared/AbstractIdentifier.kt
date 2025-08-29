@@ -1,4 +1,4 @@
-package tech.chrigu.spring.modulith.hr.shared
+package tech.chrigu.spring.modulith.shared
 
 import org.jmolecules.ddd.types.Identifier
 import java.io.Serializable

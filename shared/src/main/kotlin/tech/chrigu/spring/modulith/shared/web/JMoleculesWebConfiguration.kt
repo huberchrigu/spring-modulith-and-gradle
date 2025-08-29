@@ -1,4 +1,4 @@
-package tech.chrigu.spring.modulith.hr.shared.web
+package tech.chrigu.spring.modulith.shared.web
 
 import org.jmolecules.spring.IdentifierToPrimitivesConverter
 import org.jmolecules.spring.PrimitivesToIdentifierConverter

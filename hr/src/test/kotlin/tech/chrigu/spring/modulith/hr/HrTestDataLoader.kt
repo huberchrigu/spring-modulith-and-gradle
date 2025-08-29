@@ -1,11 +1,16 @@
 package tech.chrigu.spring.modulith.hr
 
+import jakarta.annotation.PostConstruct
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
 import tech.chrigu.spring.modulith.hr.company.Company
 import tech.chrigu.spring.modulith.hr.company.CompanyService
 import tech.chrigu.spring.modulith.hr.employee.Employee
+import tech.chrigu.spring.modulith.hr.employee.EmployeeId
 import tech.chrigu.spring.modulith.hr.employee.EmployeeService
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHow
+import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowService
 
 @Component
@@ -27,24 +32,25 @@ class HrTestDataLoader(
     val companyName = "Milch & Käse"
 
     val cssId
-        get() = css.id!!.toString()
+        get() = css.id.toString()
     val kotlinId
-        get() = kotlin.id!!.toString()
+        get() = kotlin.id.toString()
 
     val employeeId
-        get() = employee.id!!.toString()
+        get() = employee.id.toString()
     val employeeId2
-        get() = employee2.id!!.toString()
+        get() = employee2.id.toString()
 
     val companyId
-        get() = company.id!!.toString()
+        get() = company.id.toString()
 
-    suspend fun load() {
-        css = knowHowService.create(cssName)
-        kotlin = knowHowService.create(kotlinName)
-        employee = employeeService.create(employeeName, listOf(css.id!!))
-        employee2 = employeeService.create(employeeName2, emptyList())
-        company = companyService.create(companyName, listOf(employee.id!!))
+    @PostConstruct
+    fun load() = runBlocking {
+        css = knowHow(cssName)
+        kotlin = knowHow(kotlinName)
+        employee = employee(employeeName, listOf(css.id))
+        employee2 = employee(employeeName2, emptyList())
+        company = company(companyName, listOf(employee.id))
     }
 
     suspend fun clear() {
@@ -52,4 +58,9 @@ class HrTestDataLoader(
         employeeService.clear()
         companyService.clear()
     }
+
+    private suspend fun knowHow(name: String): KnowHow = knowHowService.findByTitle(name) ?: knowHowService.create(name)
+    private suspend fun employee(name: String, skills: List<KnowHowId>) = employeeService.findByName(name).firstOrNull() ?: employeeService.create(name, skills)
+    private suspend fun company(name: String, employees: List<EmployeeId>) = companyService.findByName(name) ?: companyService.create(name, employees)
+
 }

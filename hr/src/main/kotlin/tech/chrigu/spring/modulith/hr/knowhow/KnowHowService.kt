@@ -13,4 +13,8 @@ class KnowHowService(private val knowHowRepository: KnowHowRepository) {
     suspend fun clear() {
         knowHowRepository.deleteAll()
     }
+
+    suspend fun findByTitle(name: String): KnowHow? {
+        return knowHowRepository.findByTitle(name)
+    }
 }

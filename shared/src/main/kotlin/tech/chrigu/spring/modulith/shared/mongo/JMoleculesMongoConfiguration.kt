@@ -1,4 +1,4 @@
-package tech.chrigu.spring.modulith.hr.shared.mongo
+package tech.chrigu.spring.modulith.shared.mongo
 
 import org.jmolecules.ddd.types.Identifier
 import org.springframework.context.annotation.Bean

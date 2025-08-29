@@ -1,8 +1,6 @@
 package tech.chrigu.spring.modulith.hr
 
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
@@ -14,14 +12,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @AutoConfigureWebTestClient
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class HrModuleTest(private val webTestClient: WebTestClient, private val testData: HrTestDataLoader) {
-    @BeforeEach
-    fun init() {
-        runBlocking {
-            testData.clear()
-            testData.load()
-        }
-    }
-
     @Test
     fun `should create know-how`() {
         webTestClient.post().uri("/know-how")

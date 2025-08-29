@@ -2,8 +2,8 @@ package tech.chrigu.spring.modulith.hr.employee
 
 import org.jmolecules.ddd.types.AggregateRoot
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
-import tech.chrigu.spring.modulith.hr.shared.AbstractIdentifier
-import tech.chrigu.spring.modulith.hr.shared.IdentifierObject
+import tech.chrigu.spring.modulith.shared.AbstractIdentifier
+import tech.chrigu.spring.modulith.shared.IdentifierObject
 import java.util.UUID
 
 data class Employee(override val id: EmployeeId, val name: String, val skills: List<KnowHowId>) : AggregateRoot<Employee, EmployeeId> {
