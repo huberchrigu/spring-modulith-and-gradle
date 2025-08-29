@@ -1,14 +1,13 @@
 package tech.chrigu.spring.modulith.hr
 
-import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import
 
-@Import(HrTestcontainersConfiguration::class)
-@SpringBootTest
-class TestHrModule {
-    @Test
-    fun contextLoads() {
-    }
-}
+@SpringBootApplication
+@Import(HrTestcontainersConfiguration::class, HrTestDataLoader::class)
+class TestHrModule
 
+fun main(args: Array<String>) {
+    runApplication<TestHrModule>(*args)
+}

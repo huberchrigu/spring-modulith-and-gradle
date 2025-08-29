@@ -1,8 +1,21 @@
 package tech.chrigu.spring.modulith.hr.employee
 
+import org.jmolecules.ddd.types.AggregateRoot
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
+import tech.chrigu.spring.modulith.hr.shared.AbstractIdentifier
+import tech.chrigu.spring.modulith.hr.shared.IdentifierObject
+import java.util.UUID
 
-class Employee(private val id: EmployeeId?, private val name: String, private val skills: List<KnowHowId>)
+data class Employee(override val id: EmployeeId, val name: String, val skills: List<KnowHowId>) : AggregateRoot<Employee, EmployeeId> {
+    fun addSkill(skill: KnowHowId): Employee {
+        return copy(skills = skills + skill)
+    }
 
-@JvmInline
-value class EmployeeId(private val id: String)
+    fun removeSkill(skill: KnowHowId): Employee {
+        return copy(skills = skills - skill)
+    }
+}
+
+class EmployeeId(id: UUID) : AbstractIdentifier(id) {
+    companion object : IdentifierObject<EmployeeId>(::EmployeeId)
+}

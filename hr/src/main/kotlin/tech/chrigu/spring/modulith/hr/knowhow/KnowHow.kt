@@ -1,6 +1,12 @@
 package tech.chrigu.spring.modulith.hr.knowhow
 
-data class KnowHow(private val id: KnowHowId?, private val title: String)
+import org.jmolecules.ddd.types.AggregateRoot
+import tech.chrigu.spring.modulith.hr.shared.AbstractIdentifier
+import tech.chrigu.spring.modulith.hr.shared.IdentifierObject
+import java.util.UUID
 
-@JvmInline
-value class KnowHowId(private val id: String)
+data class KnowHow(override val id: KnowHowId, val title: String) : AggregateRoot<KnowHow, KnowHowId>
+
+class KnowHowId(id: UUID) : AbstractIdentifier(id) {
+    companion object : IdentifierObject<KnowHowId>(::KnowHowId)
+}
