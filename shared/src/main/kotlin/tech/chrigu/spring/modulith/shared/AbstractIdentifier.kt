@@ -2,7 +2,7 @@ package tech.chrigu.spring.modulith.shared
 
 import org.jmolecules.ddd.types.Identifier
 import java.io.Serializable
-import java.util.UUID
+import java.util.*
 
 abstract class AbstractIdentifier(val id: UUID) : Identifier, Serializable {
     override fun toString() = id.toString()
@@ -22,4 +22,5 @@ abstract class AbstractIdentifier(val id: UUID) : Identifier, Serializable {
 
 open class IdentifierObject<T : Identifier>(private val create: (UUID) -> T) {
     fun newId() = create(UUID.randomUUID())
+    fun of(id: String) = create(UUID.fromString(id))
 }

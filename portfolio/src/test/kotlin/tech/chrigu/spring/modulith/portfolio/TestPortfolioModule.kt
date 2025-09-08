@@ -5,9 +5,9 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import
 
 @SpringBootApplication
-@Import(PortfolioTestcontainersConfiguration::class)
-class TestPortfolioApplication
+@Import(PortfolioTestcontainersConfiguration::class, PortfolioTestDataLoader::class)
+class TestPortfolioModule
 
 fun main(args: Array<String>) {
-    runApplication<TestPortfolioApplication>(*args)
+    runApplication<TestPortfolioModule>(*args)
 }

@@ -9,7 +9,7 @@ import java.net.URI
 
 @RestController
 @RequestMapping("/employees")
-class EmployeeRestController(private val employeeService: EmployeeService) {
+internal class EmployeeRestController(private val employeeService: EmployeeService) {
     @PostMapping
     suspend fun createEmployee(@RequestBody body: CreateEmployeeBody) = employeeService.create(body.name, body.skills)
         .let { ResponseEntity.created(URI.create("/employees/${it.id}")).body(it) }

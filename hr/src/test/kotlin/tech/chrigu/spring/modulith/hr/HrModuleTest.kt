@@ -1,19 +1,26 @@
 package tech.chrigu.spring.modulith.hr
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.modulith.test.PublishedEvents
 import org.springframework.test.context.TestConstructor
 import org.springframework.test.web.reactive.server.WebTestClient
+import tech.chrigu.spring.modulith.hr.company.Company
+import tech.chrigu.spring.modulith.hr.company.CompanyUpdatedEvent
+import tech.chrigu.spring.modulith.hr.employee.EmployeeId
+import tech.chrigu.spring.modulith.hr.knowhow.KnowHow
+import tech.chrigu.spring.modulith.hr.knowhow.KnowHowUpdatedEvent
 
-@SpringBootTest(properties = ["logging.level.org.springframework.boot.autoconfigure=DEBUG"])
+@SpringBootTest
 @AutoConfigureWebTestClient
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class HrModuleTest(private val webTestClient: WebTestClient, private val testData: HrTestDataLoader) {
+internal class HrModuleTest(private val webTestClient: WebTestClient, private val testData: HrTestDataLoader, private val objectMapper: ObjectMapper) {
     @Test
-    fun `should create know-how`() {
+    fun `should create know-how`(publishedEvents: PublishedEvents) {
         webTestClient.post().uri("/know-how")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
@@ -26,6 +33,12 @@ class HrModuleTest(private val webTestClient: WebTestClient, private val testDat
             .expectBody()
             .jsonPath("title").isEqualTo("Java")
             .jsonPath("id").isNotEmpty
+            .consumeWith {
+                val id = objectMapper.readValue(it.responseBody, KnowHow::class.java).id
+                assertThat(publishedEvents.ofType(KnowHowUpdatedEvent::class.java)).containsExactly(
+                    KnowHowUpdatedEvent(KnowHow(id, "Java"))
+                )
+            }
     }
 
     @Test
@@ -85,7 +98,7 @@ class HrModuleTest(private val webTestClient: WebTestClient, private val testDat
     }
 
     @Test
-    fun `should add employee to company`() {
+    fun `should add employee to company`(publishedEvents: PublishedEvents) {
         webTestClient.post().uri("/companies/{id}/employees", testData.companyId)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
@@ -99,10 +112,19 @@ class HrModuleTest(private val webTestClient: WebTestClient, private val testDat
             .jsonPath("id").isEqualTo(testData.companyId)
             .jsonPath("name").isEqualTo(testData.companyName)
             .jsonPath("employees").value<List<Any>> { assertThat(it).containsExactly(testData.employeeId, testData.employeeId2) }
+            .consumeWith {
+                val id = objectMapper.readValue(it.responseBody, Company::class.java).id
+                assertThat(publishedEvents.ofType(CompanyUpdatedEvent::class.java))
+                    .containsExactly(
+                        CompanyUpdatedEvent(
+                            Company(id, testData.companyName, listOf(testData.employeeId, testData.employeeId2).map(EmployeeId::of))
+                        )
+                    )
+            }
     }
 
     @Test
-    fun `should create company`() {
+    fun `should create company`(publishedEvents: PublishedEvents) {
         webTestClient.post().uri("/companies")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
@@ -116,5 +138,13 @@ class HrModuleTest(private val webTestClient: WebTestClient, private val testDat
             .jsonPath("id").isNotEmpty
             .jsonPath("name").isEqualTo("Per Müller AG")
             .jsonPath("employees").value<List<String>> { assertThat(it).containsExactly(testData.employeeId2) }
+            .consumeWith {
+                val id = objectMapper.readValue(it.responseBody, Company::class.java).id
+                assertThat(publishedEvents.ofType(CompanyUpdatedEvent::class.java)).containsExactly(
+                    CompanyUpdatedEvent(
+                        Company(id, "Per Müller AG", listOf(EmployeeId.of(testData.employeeId2)))
+                    )
+                )
+            }
     }
 }

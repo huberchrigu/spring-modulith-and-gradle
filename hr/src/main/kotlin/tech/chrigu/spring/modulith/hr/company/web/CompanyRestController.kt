@@ -9,7 +9,7 @@ import java.net.URI
 
 @RestController
 @RequestMapping("/companies")
-class CompanyRestController(private val companyService: CompanyService) {
+internal class CompanyRestController(private val companyService: CompanyService) {
     @GetMapping
     suspend fun findByName(name: String) = companyService.findByName(name)
 

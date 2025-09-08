@@ -10,7 +10,7 @@ import java.net.URI
 
 @RestController
 @RequestMapping("/know-how")
-class KnowHowRestController(private val knowHowService: KnowHowService) {
+internal class KnowHowRestController(private val knowHowService: KnowHowService) {
     @PostMapping
     suspend fun create(@RequestBody body: CreateBody) = knowHowService.create(body.title)
         .let { ResponseEntity.created(URI.create("/know-how/${it.id}")).body(it) }

@@ -14,7 +14,7 @@ import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowService
 
 @Component
-class HrTestDataLoader(
+internal class HrTestDataLoader(
     private val knowHowService: KnowHowService,
     private val employeeService: EmployeeService,
     private val companyService: CompanyService

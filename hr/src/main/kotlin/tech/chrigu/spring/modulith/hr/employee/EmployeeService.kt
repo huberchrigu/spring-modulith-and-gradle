@@ -8,7 +8,7 @@ import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowService
 
 @Service
-class EmployeeService(private val employeeRepository: EmployeeRepository, private val knowHowService: KnowHowService) {
+internal class EmployeeService(private val employeeRepository: EmployeeRepository, private val knowHowService: KnowHowService) {
     suspend fun getOrCreate(name: String): Employee {
         val one = employeeRepository.findByName(name).toList()
             .let {
