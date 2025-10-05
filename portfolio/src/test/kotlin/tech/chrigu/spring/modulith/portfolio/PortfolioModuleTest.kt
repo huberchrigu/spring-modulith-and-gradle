@@ -11,7 +11,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @SpringBootTest(properties = ["logging.level.org.springframework.boot.autoconfigure=DEBUG"])
 @AutoConfigureWebTestClient
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class PortfolioModuleTest(private val webTestClient: WebTestClient, private val testData: PortfolioTestDataLoader) {
+internal class PortfolioModuleTest(private val webTestClient: WebTestClient, private val testData: PortfolioTestDataLoader) {
     @Test
     fun `should create skill`() {
         webTestClient.post().uri("/skills")

@@ -14,7 +14,7 @@ import tech.chrigu.spring.modulith.portfolio.skill.SkillId
 import tech.chrigu.spring.modulith.portfolio.skill.SkillService
 
 @Component
-class PortfolioTestDataLoader(
+internal class PortfolioTestDataLoader(
     private val skillService: SkillService,
     private val serviceService: ServiceService,
     private val companyService: CompanyService
