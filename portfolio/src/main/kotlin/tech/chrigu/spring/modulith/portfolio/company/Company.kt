@@ -5,8 +5,13 @@ import tech.chrigu.spring.modulith.shared.AbstractIdentifier
 import tech.chrigu.spring.modulith.shared.IdentifierObject
 import java.util.*
 
-internal data class Company(val id: CompanyId, val name: String, val offeredServices: List<ServiceId>)
+data class Company(val id: CompanyId, val name: String, val offeredServices: List<ServiceId>) {
+    fun add(serviceId: ServiceId): Company {
+        require(offeredServices.contains(serviceId).not())
+        return copy(offeredServices = offeredServices + serviceId)
+    }
+}
 
-internal class CompanyId(uuid: UUID) : AbstractIdentifier(uuid) {
+class CompanyId(uuid: UUID) : AbstractIdentifier(uuid) {
     companion object : IdentifierObject<CompanyId>({ CompanyId(it) })
 }

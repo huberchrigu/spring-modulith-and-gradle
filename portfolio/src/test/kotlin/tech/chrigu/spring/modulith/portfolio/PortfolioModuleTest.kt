@@ -1,31 +1,40 @@
 package tech.chrigu.spring.modulith.portfolio
 
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.MediaType
 import org.springframework.test.context.TestConstructor
 import org.springframework.test.web.reactive.server.WebTestClient
+import tech.chrigu.spring.modulith.hr.company.Company
+import tech.chrigu.spring.modulith.hr.company.CompanyId
+import tech.chrigu.spring.modulith.hr.company.CompanyUpdatedEvent
+import tech.chrigu.spring.modulith.hr.knowhow.KnowHow
+import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
+import tech.chrigu.spring.modulith.portfolio.company.CompanyService
+import tech.chrigu.spring.modulith.portfolio.skill.Skill
+import tech.chrigu.spring.modulith.portfolio.skill.SkillId
+import tech.chrigu.spring.modulith.portfolio.skill.SkillService
 
 @SpringBootTest(properties = ["logging.level.org.springframework.boot.autoconfigure=DEBUG"])
 @AutoConfigureWebTestClient
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-internal class PortfolioModuleTest(private val webTestClient: WebTestClient, private val testData: PortfolioTestDataLoader) {
+internal class PortfolioModuleTest(
+    private val webTestClient: WebTestClient, private val testData: PortfolioTestDataLoader,
+    private val eventPublisher: ApplicationEventPublisher, private val companyService: CompanyService,
+    private val skillService: SkillService
+) {
     @Test
-    fun `should create skill`() {
-        webTestClient.post().uri("/skills")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(
-                """
-                {"title": "Java"}
-            """.trimIndent()
-            )
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody()
-            .jsonPath("title").isEqualTo("Java")
-            .jsonPath("id").isNotEmpty
+    fun `should create skill`() = runTest {
+        val knowHow = KnowHow(KnowHowId.newId(), "Java")
+        eventPublisher.publishEvent(knowHow)
+        val skill = skillService.findByName(knowHow.title)
+        val expected = Skill(SkillId(knowHow.id.id), knowHow.title)
+        assertThat(skill).isEqualTo(expected)
     }
 
     @Test
@@ -69,7 +78,7 @@ internal class PortfolioModuleTest(private val webTestClient: WebTestClient, pri
             .expectStatus().isOk
             .expectBody()
             .jsonPath("id").isEqualTo(testData.serviceId)
-            .jsonPath("name").isEqualTo(testData.serviceTitle)
+            .jsonPath("title").isEqualTo(testData.serviceTitle)
             .jsonPath("requiredSkills").isEmpty
     }
 
@@ -79,9 +88,9 @@ internal class PortfolioModuleTest(private val webTestClient: WebTestClient, pri
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("id").isEqualTo(testData.companyId)
-            .jsonPath("name").isEqualTo(testData.companyName)
-            .jsonPath("offeredServices").isEqualTo(testData.serviceId)
+            .jsonPath("$[0].id").isEqualTo(testData.companyId)
+            .jsonPath("$[0].name").isEqualTo(testData.companyName)
+            .jsonPath("$[0].offeredServices").isEqualTo(testData.serviceId)
     }
 
     @Test
@@ -102,19 +111,11 @@ internal class PortfolioModuleTest(private val webTestClient: WebTestClient, pri
     }
 
     @Test
-    fun `should create company`() {
-        webTestClient.post().uri("/companies")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(
-                """
-                {"name":  "Per Müller AG", "offeredServices":  ["${testData.serviceId2}"]}
-            """.trimIndent()
-            )
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody()
-            .jsonPath("id").isNotEmpty
-            .jsonPath("name").isEqualTo("Per Müller AG")
-            .jsonPath("offeredServices").value<List<String>> { assertThat(it).containsExactly(testData.serviceId2) }
+    fun `should create company`() = runTest {
+        val company = Company(CompanyId.newId(), "Petr Müller AG", emptyList())
+        eventPublisher.publishEvent(CompanyUpdatedEvent(company))
+        val companies = companyService.findByName(company.name).toList()
+        val expected = tech.chrigu.spring.modulith.portfolio.company.Company(tech.chrigu.spring.modulith.portfolio.company.CompanyId(company.id.id), company.name, emptyList())
+        assertThat(companies).containsExactly(expected)
     }
 }

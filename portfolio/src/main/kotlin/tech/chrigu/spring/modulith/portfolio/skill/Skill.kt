@@ -9,6 +9,6 @@ import java.util.UUID
 @Document
 internal data class Skill(val id: SkillId, @field:Indexed(unique = true) val name: String)
 
-internal class SkillId(uuid: UUID) : AbstractIdentifier(uuid) {
+class SkillId(uuid: UUID) : AbstractIdentifier(uuid) {
     companion object : IdentifierObject<SkillId>({ SkillId(it) })
 }
