@@ -12,7 +12,7 @@ import java.net.URI
 internal class ServiceRestController(private val serviceService: ServiceService) {
     @PostMapping
     suspend fun createService(@RequestBody body: CreateServiceBody) = serviceService.create(body.title, body.description, body.requiredSkills)
-        .let { ResponseEntity.created(URI("/services/$it.id")).body(it) }
+        .let { ResponseEntity.created(URI("/services/${it.id}")).body(it) }
 
     @PostMapping("/{id}/required-skills")
     suspend fun addSkill(@PathVariable id: ServiceId, @RequestBody body: AddSkillBody) = serviceService.addSkill(id, body.requiredSkill)

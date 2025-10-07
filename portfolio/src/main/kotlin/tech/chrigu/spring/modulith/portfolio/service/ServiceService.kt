@@ -5,7 +5,7 @@ import tech.chrigu.spring.modulith.portfolio.service.mongo.ServiceRepository
 import tech.chrigu.spring.modulith.portfolio.skill.SkillId
 
 @Service
-internal class ServiceService(private val serviceRepository: ServiceRepository) {
+class ServiceService(private val serviceRepository: ServiceRepository) {
     suspend fun create(title: String, description: String, requiredSkills: List<SkillId>) = serviceRepository.save(Service(ServiceId.newId(), title, description, requiredSkills))
     suspend fun addSkill(id: ServiceId, skillId: SkillId) = serviceRepository.findById(id)
         ?.add(skillId)

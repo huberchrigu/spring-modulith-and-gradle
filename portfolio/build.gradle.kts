@@ -59,6 +59,7 @@ dependencies {
     implementation("org.jmolecules.integrations:jmolecules-starter-ddd:0.28.0")
     testImplementation("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 }
 
 dependencyManagement {
