@@ -2,7 +2,7 @@ package tech.chrigu.spring.modulith.portfolio.company
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.springframework.modulith.ApplicationModuleListener
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import tech.chrigu.spring.modulith.hr.company.CompanyDeletedEvent
 import tech.chrigu.spring.modulith.hr.company.CompanyUpdatedEvent
@@ -17,12 +17,12 @@ class CompanyService(private val companyRepository: CompanyRepository, private v
     suspend fun addService(id: CompanyId, service: ServiceId) = companyRepository.findById(id)
         ?.add(service)
 
-    @ApplicationModuleListener
+    @EventListener
     fun on(event: CompanyUpdatedEvent) = coroutineScope.launch {
         companyRepository.save(event.company.toDomain())
     }
 
-    @ApplicationModuleListener
+    @EventListener
     fun on(event: CompanyDeletedEvent) = coroutineScope.launch {
         companyRepository.delete(event.company.toDomain())
     }

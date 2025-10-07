@@ -2,7 +2,7 @@ package tech.chrigu.spring.modulith.portfolio.skill
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.springframework.modulith.ApplicationModuleListener
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHow
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowDeletedEvent
@@ -20,12 +20,12 @@ internal class SkillService(private val skillRepository: SkillRepository, privat
         return skillRepository.save(Skill(SkillId.newId(), name))
     }
 
-    @ApplicationModuleListener
+    @EventListener
     fun on(e: KnowHowUpdatedEvent) = coroutineScope.launch {
         skillRepository.save(e.knowHow.toSkill())
     }
 
-    @ApplicationModuleListener
+    @EventListener
     fun on(e: KnowHowDeletedEvent) = coroutineScope.launch {
         skillRepository.delete(e.knowHow.toSkill())
     }

@@ -1,12 +1,7 @@
 package tech.chrigu.spring.modulith.portfolio.service.web
 
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import tech.chrigu.spring.modulith.portfolio.service.Service
+import org.springframework.web.bind.annotation.*
 import tech.chrigu.spring.modulith.portfolio.service.ServiceId
 import tech.chrigu.spring.modulith.portfolio.service.ServiceService
 import tech.chrigu.spring.modulith.portfolio.skill.SkillId
@@ -16,11 +11,11 @@ import java.net.URI
 @RequestMapping("/services")
 internal class ServiceRestController(private val serviceService: ServiceService) {
     @PostMapping
-    suspend fun createService(body: CreateServiceBody) = serviceService.create(body.title, body.description, body.requiredSkills)
-        .let { ResponseEntity.created(URI("/services/$it.id")).build<Service>() }
+    suspend fun createService(@RequestBody body: CreateServiceBody) = serviceService.create(body.title, body.description, body.requiredSkills)
+        .let { ResponseEntity.created(URI("/services/$it.id")).body(it) }
 
     @PostMapping("/{id}/required-skills")
-    suspend fun addSkill(@PathVariable id: ServiceId, body: AddSkillBody) = serviceService.addSkill(id, body.requiredSkill)
+    suspend fun addSkill(@PathVariable id: ServiceId, @RequestBody body: AddSkillBody) = serviceService.addSkill(id, body.requiredSkill)
         ?.let { ResponseEntity.ok(it) }
         ?: ResponseEntity.notFound().build()
 

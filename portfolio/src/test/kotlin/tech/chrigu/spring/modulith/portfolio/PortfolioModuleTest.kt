@@ -43,7 +43,7 @@ internal class PortfolioModuleTest(
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
-                {"title":  "Kotlin Coding", "requiredSkills":  ["${testData.kotlinId}"]}
+                {"title":  "Kotlin Coding", "description": "Programming in Kotlin", "requiredSkills":  ["${testData.kotlinId}"]}
             """.trimIndent()
             )
             .exchange()
