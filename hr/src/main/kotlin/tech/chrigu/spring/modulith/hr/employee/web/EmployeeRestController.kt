@@ -5,14 +5,15 @@ import org.springframework.web.bind.annotation.*
 import tech.chrigu.spring.modulith.hr.employee.EmployeeId
 import tech.chrigu.spring.modulith.hr.employee.EmployeeService
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
+import tech.chrigu.spring.modulith.hr.shared.web.HrApi
 import java.net.URI
 
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("${HrApi.BASE_URI}/employees")
 internal class EmployeeRestController(private val employeeService: EmployeeService) {
     @PostMapping
     suspend fun createEmployee(@RequestBody body: CreateEmployeeBody) = employeeService.create(body.name, body.skills)
-        .let { ResponseEntity.created(URI.create("/employees/${it.id}")).body(it) }
+        .let { ResponseEntity.created(URI.create("/hr/employees/${it.id}")).body(it) }
 
     @PostMapping("/{id}/skills")
     suspend fun addSkill(@PathVariable id: EmployeeId, @RequestBody body: AddSkillBody) = employeeService.addSkill(id, body.skill)

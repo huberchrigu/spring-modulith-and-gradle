@@ -4,6 +4,6 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import tech.chrigu.spring.modulith.portfolio.skill.Skill
 import tech.chrigu.spring.modulith.portfolio.skill.SkillId
 
-internal interface SkillRepository : CoroutineCrudRepository<Skill, SkillId> {
+interface SkillRepository : CoroutineCrudRepository<Skill, SkillId> {
     suspend fun findByName(name: String): Skill?
 }

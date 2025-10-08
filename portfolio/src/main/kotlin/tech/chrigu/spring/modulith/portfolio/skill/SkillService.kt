@@ -11,7 +11,7 @@ import tech.chrigu.spring.modulith.hr.knowhow.KnowHowUpdatedEvent
 import tech.chrigu.spring.modulith.portfolio.skill.mongo.SkillRepository
 
 @Service
-internal class SkillService(private val skillRepository: SkillRepository, private val coroutineScope: CoroutineScope) {
+class SkillService(private val skillRepository: SkillRepository, private val coroutineScope: CoroutineScope) {
     suspend fun findByName(name: String): Skill? {
         return skillRepository.findByName(name)
     }
@@ -30,6 +30,9 @@ internal class SkillService(private val skillRepository: SkillRepository, privat
         skillRepository.delete(e.knowHow.toSkill())
     }
 
+    suspend fun clear() {
+        skillRepository.deleteAll()
+    }
     private fun KnowHow.toSkill() = Skill(id.toSkillId(), title)
     private fun KnowHowId.toSkillId() = SkillId(id)
 }

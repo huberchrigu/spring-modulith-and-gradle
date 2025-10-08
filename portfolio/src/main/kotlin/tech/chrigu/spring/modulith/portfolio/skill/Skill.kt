@@ -7,8 +7,8 @@ import tech.chrigu.spring.modulith.shared.IdentifierObject
 import java.util.UUID
 
 @Document
-internal data class Skill(val id: SkillId, @field:Indexed(unique = true) val name: String)
+data class Skill(val id: SkillId, @field:Indexed(unique = true) val name: String)
 
-class SkillId(uuid: UUID) : AbstractIdentifier(uuid) {
-    companion object : IdentifierObject<SkillId>({ SkillId(it) })
+class SkillId(id: UUID) : AbstractIdentifier(id) {
+    companion object : IdentifierObject<SkillId>(::SkillId)
 }

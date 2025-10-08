@@ -13,6 +13,7 @@ import tech.chrigu.spring.modulith.portfolio.PortfolioTestDataLoader
 import tech.chrigu.spring.modulith.portfolio.service.Service
 import tech.chrigu.spring.modulith.portfolio.service.ServiceId
 import tech.chrigu.spring.modulith.portfolio.service.ServiceService
+import tech.chrigu.spring.modulith.portfolio.skill.SkillId
 
 @WebFluxTest(ServiceRestController::class)
 internal class ServiceRestControllerTest(
@@ -20,27 +21,29 @@ internal class ServiceRestControllerTest(
 ) {
     @MockitoBean
     private lateinit var serviceService: ServiceService
+
     @MockitoBean
     private lateinit var portfolioTestDataLoader: PortfolioTestDataLoader
 
     private val title = "Kotlin Coding"
     private val description = "Programming in Kotlin"
+    private val skill = SkillId.newId()
 
     @Test
     fun `should create service`() = runTest {
-        whenever(serviceService.create(title, description, emptyList())) doReturn Service(ServiceId.newId(), title, description, emptyList())
-        webTestClient.post().uri("/services")
+        whenever(serviceService.create(title, description, listOf(skill))) doReturn Service(ServiceId.newId(), title, description, listOf(skill))
+        webTestClient.post().uri("/portfolio/services")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
-                {"title":  "$title", "description": "$description", "requiredSkills":  []}
+                {"title":  "$title", "description": "$description", "requiredSkills":  ["$skill"]}
             """.trimIndent()
             )
             .exchange()
             .expectStatus().isCreated
             .expectBody()
             .jsonPath("title").isEqualTo(title)
-            .jsonPath("requiredSkills").isEmpty
+            .jsonPath("requiredSkills").isEqualTo(skill.toString())
             .jsonPath("id").isNotEmpty
     }
 }

@@ -4,8 +4,8 @@ import jakarta.annotation.PostConstruct
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
-import tech.chrigu.spring.modulith.portfolio.company.Company
-import tech.chrigu.spring.modulith.portfolio.company.CompanyService
+import tech.chrigu.spring.modulith.portfolio.company.PortfolioCompany
+import tech.chrigu.spring.modulith.portfolio.company.PortfolioCompanyService
 import tech.chrigu.spring.modulith.portfolio.service.Service
 import tech.chrigu.spring.modulith.portfolio.service.ServiceId
 import tech.chrigu.spring.modulith.portfolio.service.ServiceService
@@ -17,13 +17,13 @@ import tech.chrigu.spring.modulith.portfolio.skill.SkillService
 internal class PortfolioTestDataLoader(
     private val skillService: SkillService,
     private val serviceService: ServiceService,
-    private val companyService: CompanyService
+    private val companyService: PortfolioCompanyService
 ) {
     lateinit var css: Skill
     lateinit var kotlin: Skill
     lateinit var service: Service
     lateinit var service2: Service
-    lateinit var company: Company
+    lateinit var company: PortfolioCompany
 
     val cssName = "CSS"
     val kotlinName = "Kotlin"
@@ -53,6 +53,11 @@ internal class PortfolioTestDataLoader(
         service = service(serviceTitle, serviceDescription, listOf(css.id))
         service2 = service(serviceTitle2, serviceDescription2, emptyList())
         company = company(companyName, listOf(service.id))
+    }
+    fun clear() = runBlocking {
+        skillService.clear()
+        serviceService.clear()
+        companyService.clear()
     }
 
     private suspend fun skill(name: String) = skillService.findByName(name) ?: skillService.create(name)

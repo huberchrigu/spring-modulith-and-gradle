@@ -38,7 +38,7 @@ internal class HrModuleTest(
 
     @Test
     fun `should create know-how`() {
-        webTestClient.post().uri("/know-how")
+        webTestClient.post().uri("/hr/know-how")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
@@ -60,7 +60,7 @@ internal class HrModuleTest(
 
     @Test
     fun `should create employee`() {
-        webTestClient.post().uri("/employees")
+        webTestClient.post().uri("/hr/employees")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
@@ -77,7 +77,7 @@ internal class HrModuleTest(
 
     @Test
     fun `should add skill`() {
-        webTestClient.post().uri("/employees/{id}/skills", testData.employeeId)
+        webTestClient.post().uri("/hr/employees/{id}/skills", testData.employeeId)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
@@ -94,7 +94,7 @@ internal class HrModuleTest(
 
     @Test
     fun `should remove skill`() {
-        webTestClient.delete().uri("/employees/{id}/skills/{skill}", testData.employeeId, testData.cssId)
+        webTestClient.delete().uri("/hr/employees/{id}/skills/{skill}", testData.employeeId, testData.cssId)
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -105,7 +105,7 @@ internal class HrModuleTest(
 
     @Test
     fun `should find company by name`() {
-        webTestClient.get().uri("/companies?name={name}", testData.companyName)
+        webTestClient.get().uri("/hr/companies?name={name}", testData.companyName)
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -116,7 +116,7 @@ internal class HrModuleTest(
 
     @Test
     fun `should add employee to company`() {
-        webTestClient.post().uri("/companies/{id}/employees", testData.companyId)
+        webTestClient.post().uri("/hr/companies/{id}/employees", testData.companyId)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
@@ -142,7 +142,7 @@ internal class HrModuleTest(
 
     @Test
     fun `should create company`() {
-        webTestClient.post().uri("/companies")
+        webTestClient.post().uri("/hr/companies")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """

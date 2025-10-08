@@ -1,8 +1,11 @@
 package tech.chrigu.spring.modulith.portfolio
 
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
+import org.awaitility.Awaitility
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,7 +18,8 @@ import tech.chrigu.spring.modulith.hr.company.CompanyId
 import tech.chrigu.spring.modulith.hr.company.CompanyUpdatedEvent
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHow
 import tech.chrigu.spring.modulith.hr.knowhow.KnowHowId
-import tech.chrigu.spring.modulith.portfolio.company.CompanyService
+import tech.chrigu.spring.modulith.hr.knowhow.KnowHowUpdatedEvent
+import tech.chrigu.spring.modulith.portfolio.company.PortfolioCompanyService
 import tech.chrigu.spring.modulith.portfolio.skill.Skill
 import tech.chrigu.spring.modulith.portfolio.skill.SkillId
 import tech.chrigu.spring.modulith.portfolio.skill.SkillService
@@ -25,13 +29,20 @@ import tech.chrigu.spring.modulith.portfolio.skill.SkillService
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 internal class PortfolioModuleTest(
     private val webTestClient: WebTestClient, private val testData: PortfolioTestDataLoader,
-    private val eventPublisher: ApplicationEventPublisher, private val companyService: CompanyService,
+    private val eventPublisher: ApplicationEventPublisher, private val companyService: PortfolioCompanyService,
     private val skillService: SkillService
 ) {
+    @BeforeEach
+    fun resetTestData() = runTest {
+        testData.clear()
+        testData.load()
+    }
+
     @Test
     fun `should create skill`() = runTest {
         val knowHow = KnowHow(KnowHowId.newId(), "Java")
-        eventPublisher.publishEvent(knowHow)
+        eventPublisher.publishEvent(KnowHowUpdatedEvent(knowHow))
+        Awaitility.await().until { runBlocking { skillService.findByName(knowHow.title) != null } }
         val skill = skillService.findByName(knowHow.title)
         val expected = Skill(SkillId(knowHow.id.id), knowHow.title)
         assertThat(skill).isEqualTo(expected)
@@ -39,7 +50,7 @@ internal class PortfolioModuleTest(
 
     @Test
     fun `should create service`() {
-        webTestClient.post().uri("/services")
+        webTestClient.post().uri("/portfolio/services")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
@@ -49,14 +60,14 @@ internal class PortfolioModuleTest(
             .exchange()
             .expectStatus().isCreated
             .expectBody()
-            .jsonPath("name").isEqualTo("Kotlin Coding")
+            .jsonPath("title").isEqualTo("Kotlin Coding")
             .jsonPath("requiredSkills").isEqualTo(testData.kotlinId)
             .jsonPath("id").isNotEmpty
     }
 
     @Test
     fun `should add required skill`() {
-        webTestClient.post().uri("/services/{id}/required-skills", testData.serviceId)
+        webTestClient.post().uri("/portfolio/services/{id}/required-skills", testData.serviceId)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
@@ -67,13 +78,13 @@ internal class PortfolioModuleTest(
             .expectStatus().isOk
             .expectBody()
             .jsonPath("id").isEqualTo(testData.serviceId)
-            .jsonPath("name").isEqualTo(testData.serviceTitle)
+            .jsonPath("title").isEqualTo(testData.serviceTitle)
             .jsonPath("requiredSkills").value<List<Any>> { assertThat(it).containsExactly(testData.cssId, testData.kotlinId) }
     }
 
     @Test
     fun `should remove skill`() {
-        webTestClient.delete().uri("/services/{id}/required-skills/{skill}", testData.serviceId, testData.cssId)
+        webTestClient.delete().uri("/portfolio/services/{id}/required-skills/{skill}", testData.serviceId, testData.cssId)
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -84,7 +95,7 @@ internal class PortfolioModuleTest(
 
     @Test
     fun `should find company by name`() {
-        webTestClient.get().uri("/companies?name={name}", testData.companyName)
+        webTestClient.get().uri("/portfolio/companies?name={name}", testData.companyName)
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -95,11 +106,11 @@ internal class PortfolioModuleTest(
 
     @Test
     fun `should add service to company`() {
-        webTestClient.post().uri("/companies/{id}/services", testData.companyId)
+        webTestClient.post().uri("/portfolio/companies/{id}/services", testData.companyId)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(
                 """
-                {"service":  "${testData.serviceTitle2}"}
+                {"service":  "${testData.serviceId2}"}
             """.trimIndent()
             )
             .exchange()
@@ -107,7 +118,7 @@ internal class PortfolioModuleTest(
             .expectBody()
             .jsonPath("id").isEqualTo(testData.companyId)
             .jsonPath("name").isEqualTo(testData.companyName)
-            .jsonPath("services").value<List<Any>> { assertThat(it).containsExactly(testData.serviceId, testData.serviceId2) }
+            .jsonPath("offeredServices").value<List<Any>> { assertThat(it).containsExactly(testData.serviceId, testData.serviceId2) }
     }
 
     @Test
@@ -115,7 +126,11 @@ internal class PortfolioModuleTest(
         val company = Company(CompanyId.newId(), "Petr Müller AG", emptyList())
         eventPublisher.publishEvent(CompanyUpdatedEvent(company))
         val companies = companyService.findByName(company.name).toList()
-        val expected = tech.chrigu.spring.modulith.portfolio.company.Company(tech.chrigu.spring.modulith.portfolio.company.CompanyId(company.id.id), company.name, emptyList())
+        val expected = tech.chrigu.spring.modulith.portfolio.company.PortfolioCompany(
+            tech.chrigu.spring.modulith.portfolio.company.PortfolioCompanyId(company.id.id),
+            company.name,
+            emptyList()
+        )
         assertThat(companies).containsExactly(expected)
     }
 }

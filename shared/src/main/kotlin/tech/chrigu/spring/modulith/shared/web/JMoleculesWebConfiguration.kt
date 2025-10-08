@@ -44,5 +44,3 @@ internal class JMoleculesWebConfiguration {
 //        conversionService.addConverter(AssociationToPrimitivesConverter(identifierToPrimitives))
     }
 }
-
-

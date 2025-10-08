@@ -16,4 +16,7 @@ class ServiceService(private val serviceRepository: ServiceRepository) {
         ?.let { serviceRepository.save(it) }
 
     fun findByTitle(title: String) = serviceRepository.findByTitle(title)
+    suspend fun clear() {
+        serviceRepository.deleteAll()
+    }
 }

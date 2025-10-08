@@ -18,5 +18,5 @@ data class Service(val id: ServiceId, val title: String, val description: String
 }
 
 class ServiceId(id: UUID) : AbstractIdentifier(id) {
-    companion object : IdentifierObject<ServiceId>({ ServiceId(it) })
+    companion object : IdentifierObject<ServiceId>(::ServiceId)
 }

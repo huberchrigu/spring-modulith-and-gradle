@@ -5,10 +5,11 @@ import org.springframework.web.bind.annotation.*
 import tech.chrigu.spring.modulith.hr.company.CompanyId
 import tech.chrigu.spring.modulith.hr.company.CompanyService
 import tech.chrigu.spring.modulith.hr.employee.EmployeeId
+import tech.chrigu.spring.modulith.hr.shared.web.HrApi
 import java.net.URI
 
 @RestController
-@RequestMapping("/companies")
+@RequestMapping("${HrApi.BASE_URI}/companies")
 internal class CompanyRestController(private val companyService: CompanyService) {
     @GetMapping
     suspend fun findByName(name: String) = companyService.findByName(name)
