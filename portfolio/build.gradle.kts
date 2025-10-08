@@ -1,10 +1,12 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.gradle.api.tasks.testing.Test
 
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
 }
 
 group = "tech.chrigu.spring"
@@ -21,12 +23,14 @@ configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
     }
+    create("asciidoctorExt")
 }
 
 repositories {
     mavenCentral()
 }
 
+extra["snippetsDir"] = file("build/generated-snippets")
 extra["springModulithVersion"] = "1.4.1"
 
 dependencies {
@@ -37,6 +41,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
+    testImplementation("org.springframework.restdocs:spring-restdocs-webtestclient")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
@@ -60,6 +65,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    "asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
 
 dependencyManagement {
@@ -80,4 +86,14 @@ tasks.withType<Test> {
 
 tasks.withType<BootJar> {
     enabled = false
+}
+
+tasks.test {
+    outputs.dir(project.extra["snippetsDir"]!!)
+}
+
+tasks.asciidoctor {
+    configurations("asciidoctorExt")
+    inputs.dir(project.extra["snippetsDir"]!!)
+    dependsOn(tasks.test)
 }

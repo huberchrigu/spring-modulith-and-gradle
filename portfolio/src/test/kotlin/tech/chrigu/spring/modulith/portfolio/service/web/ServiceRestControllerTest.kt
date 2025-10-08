@@ -5,8 +5,13 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.http.MediaType
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
+import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import tech.chrigu.spring.modulith.portfolio.PortfolioTestDataLoader
@@ -16,6 +21,7 @@ import tech.chrigu.spring.modulith.portfolio.service.ServiceService
 import tech.chrigu.spring.modulith.portfolio.skill.SkillId
 
 @WebFluxTest(ServiceRestController::class)
+@AutoConfigureRestDocs
 internal class ServiceRestControllerTest(
     @param:Autowired private val webTestClient: WebTestClient
 ) {
@@ -45,5 +51,21 @@ internal class ServiceRestControllerTest(
             .jsonPath("title").isEqualTo(title)
             .jsonPath("requiredSkills").isEqualTo(skill.toString())
             .jsonPath("id").isNotEmpty
+            .consumeWith(
+                document(
+                    "services-create",
+                    requestFields(
+                        fieldWithPath("title").description("The title of the provided service"),
+                        fieldWithPath("description").description("The description of the provided service"),
+                        fieldWithPath("requiredSkills").description("The skills required for providing this service")
+                    ),
+                    responseFields(
+                        fieldWithPath("title").description("The title of the provided service"),
+                        fieldWithPath("description").description("The description of the provided service"),
+                        fieldWithPath("requiredSkills").description("The skills required for providing this service"),
+                        fieldWithPath("id").description("The id of the created service")
+                    )
+                )
+            )
     }
 }
