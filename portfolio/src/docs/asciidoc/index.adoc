@@ -1,5 +1,10 @@
 = Portfolio Service
+:toc2:
+{project-version}
 
 == Create Service
+
+This creates a new service in the portfolio.
+No authentication needed (yet).
 
 operation::services-create[]
