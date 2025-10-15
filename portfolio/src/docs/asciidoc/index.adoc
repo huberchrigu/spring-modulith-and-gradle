@@ -1,6 +1,5 @@
 = Portfolio Service
 :toc2:
-{project-version}
 
 == Create Service
 
