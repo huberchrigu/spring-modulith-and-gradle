@@ -66,6 +66,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
     "asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.13")
 }
 
 dependencyManagement {
