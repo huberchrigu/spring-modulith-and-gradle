@@ -1,0 +1,24 @@
+== Spring Modulith and Gradle Application
+:toc: left
+:includedir: ../../../build/spring-modulith-docs
+
+plantuml::{includedir}/components.puml[,,format=svg]
+
+== Shared
+
+plantuml::{includedir}/module-shared.puml[,,format=svg]
+include::{includedir}/module-shared.adoc[]
+
+== Hr
+
+plantuml::{includedir}/module-hr.puml[,,format=svg]
+include::{includedir}/module-hr.adoc[]
+
+include::{hr}/all-docs.adoc[leveloffset=+1]
+
+== Portfolio
+
+plantuml::{includedir}/module-portfolio.puml[,,format=svg]
+include::{includedir}/module-portfolio.adoc[]
+
+include::{portfolio}/all-docs.adoc[leveloffset=+1]

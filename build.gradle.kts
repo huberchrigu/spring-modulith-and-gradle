@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.asciidoctor.convert)
 }
 
 group = "tech.chrigu.spring"
@@ -24,7 +25,6 @@ configurations {
 repositories {
     mavenCentral()
 }
-
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
@@ -71,4 +71,27 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+tasks.asciidoctor {
+    dependsOn(tasks.test, project(":hr").tasks.test, project(":portfolio").tasks.test)
+    baseDirFollowsSourceDir()
+    attributes(
+        mapOf(
+            "hr" to project(":hr")
+                .layout.buildDirectory
+                .dir("spring-modulith-docs")
+                .get()
+                .asFile,
+            "portfolio" to project(":portfolio")
+                .layout.buildDirectory
+                .dir("spring-modulith-docs")
+                .get()
+                .asFile
+        )
+    )
+}
+asciidoctorj {
+    modules {
+        diagram.use()
+    }
 }
