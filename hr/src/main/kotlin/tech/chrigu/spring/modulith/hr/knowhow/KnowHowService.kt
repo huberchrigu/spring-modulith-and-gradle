@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import tech.chrigu.spring.modulith.hr.knowhow.mongo.KnowHowRepository
 
 @Service
-internal class KnowHowService(private val knowHowRepository: KnowHowRepository, private val applicationEventPublisher: ApplicationEventPublisher) {
+class KnowHowService(private val knowHowRepository: KnowHowRepository, private val applicationEventPublisher: ApplicationEventPublisher) {
     suspend fun exists(skill: KnowHowId): Boolean {
         return knowHowRepository.existsById(skill)
     }

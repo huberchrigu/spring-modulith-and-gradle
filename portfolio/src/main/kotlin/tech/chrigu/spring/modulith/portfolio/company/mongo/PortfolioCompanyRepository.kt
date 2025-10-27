@@ -5,6 +5,6 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import tech.chrigu.spring.modulith.portfolio.company.PortfolioCompany
 import tech.chrigu.spring.modulith.portfolio.company.PortfolioCompanyId
 
-interface CompanyRepository : CoroutineCrudRepository<PortfolioCompany, PortfolioCompanyId> {
+interface PortfolioCompanyRepository : CoroutineCrudRepository<PortfolioCompany, PortfolioCompanyId> {
     fun findByName(name: String): Flow<PortfolioCompany>
 }

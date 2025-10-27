@@ -1,0 +1,23 @@
+[versions]
+kotlin = "1.9.25"
+spring-boot = "3.5.6"
+spring-dependency-management = "1.1.7"
+asciidoctor = "3.3.2"
+spring-modulith = "1.4.1"
+jmolecules = "0.28.0"
+kmolecules = "1.10.0"
+mockito-kotlin = "5.4.0"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+asciidoctor-convert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
+
+[libraries]
+kmolecules-ddd = { group = "org.jmolecules", name = "kmolecules-ddd", version.ref = "kmolecules" }
+jmolecules-jackson = { group = "org.jmolecules.integrations", name = "jmolecules-jackson", version.ref = "jmolecules" }
+jmolecules-spring = { group = "org.jmolecules.integrations", name = "jmolecules-spring", version.ref = "jmolecules" }
+jmolecules-starter-ddd = { group = "org.jmolecules.integrations", name = "jmolecules-starter-ddd", version.ref = "jmolecules" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }

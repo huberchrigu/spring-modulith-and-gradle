@@ -8,7 +8,7 @@ import tech.chrigu.spring.modulith.hr.employee.EmployeeId
 import tech.chrigu.spring.modulith.hr.employee.EmployeeService
 
 @Service
-internal class CompanyService(
+class CompanyService(
     private val companyRepository: CompanyRepository,
     private val employeeService: EmployeeService,
     private val applicationEventPublisher: ApplicationEventPublisher

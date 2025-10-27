@@ -8,11 +8,11 @@ import tech.chrigu.spring.modulith.hr.company.Company
 import tech.chrigu.spring.modulith.hr.company.CompanyDeletedEvent
 import tech.chrigu.spring.modulith.hr.company.CompanyId
 import tech.chrigu.spring.modulith.hr.company.CompanyUpdatedEvent
-import tech.chrigu.spring.modulith.portfolio.company.mongo.CompanyRepository
+import tech.chrigu.spring.modulith.portfolio.company.mongo.PortfolioCompanyRepository
 import tech.chrigu.spring.modulith.portfolio.service.ServiceId
 
 @Service
-class PortfolioCompanyService(private val companyRepository: CompanyRepository, private val coroutineScope: CoroutineScope) {
+class PortfolioCompanyService(private val companyRepository: PortfolioCompanyRepository, private val coroutineScope: CoroutineScope) {
     suspend fun create(name: String, services: List<ServiceId>) = companyRepository.save(PortfolioCompany(PortfolioCompanyId.newId(), name, services))
     fun findByName(name: String) = companyRepository.findByName(name)
 

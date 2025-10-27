@@ -1,10 +1,10 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
-    id("org.springframework.boot") version "3.5.6"
-    id("io.spring.dependency-management") version "1.1.7"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
 }
 
 group = "tech.chrigu.spring"
@@ -21,7 +21,6 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.4.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
@@ -36,10 +35,10 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // Custom
-    implementation("org.jmolecules:kmolecules-ddd:1.10.0")
-    implementation("org.jmolecules.integrations:jmolecules-jackson:0.28.0")
-    implementation("org.jmolecules.integrations:jmolecules-spring:0.28.0")
-    implementation("org.jmolecules.integrations:jmolecules-starter-ddd:0.28.0")
+    api(libs.kmolecules.ddd)
+    api(libs.jmolecules.jackson)
+    api(libs.jmolecules.spring)
+    api(libs.jmolecules.starter.ddd)
 }
 
 kotlin {

@@ -2,11 +2,11 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.gradle.api.tasks.testing.Test
 
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
-    id("org.springframework.boot") version "3.5.6"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("org.asciidoctor.jvm.convert") version "3.3.2"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.asciidoctor.convert)
 }
 
 group = "tech.chrigu.spring"
@@ -31,7 +31,6 @@ repositories {
 }
 
 extra["snippetsDir"] = file("build/generated-snippets")
-extra["springModulithVersion"] = "1.4.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
@@ -54,23 +53,19 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // Project
-    implementation(project(":shared"))
+    api(project(":shared"))
     implementation(project(":hr"))
 
     // Custom
-    implementation("org.jmolecules:kmolecules-ddd:1.10.0")
-    implementation("org.jmolecules.integrations:jmolecules-jackson:0.28.0")
-    implementation("org.jmolecules.integrations:jmolecules-spring:0.28.0")
-    implementation("org.jmolecules.integrations:jmolecules-starter-ddd:0.28.0")
     testImplementation("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation(libs.mockito.kotlin)
     "asciidoctorExt"("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
+        mavenBom("org.springframework.modulith:spring-modulith-bom:${libs.versions.spring.modulith.get()}")
     }
 }
 

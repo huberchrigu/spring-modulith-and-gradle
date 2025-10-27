@@ -5,5 +5,7 @@ import org.springframework.boot.with
 
 
 fun main(args: Array<String>) {
-    fromApplication<SpringModulithAndGradleApplication>().with(TestcontainersConfiguration::class).run(*args)
+    fromApplication<SpringModulithAndGradleApplication>()
+        .with(TestcontainersConfiguration::class, TestDataLoader::class)
+        .run(*args)
 }
