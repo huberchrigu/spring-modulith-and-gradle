@@ -1,9 +1,30 @@
 = Portfolio Service
 :toc2:
+:includedir: ../../../build/spring-modulith-docs
 
-== Create Service
+== API
+=== Create Service
 
 This creates a new service in the portfolio.
 No authentication needed (yet).
 
 operation::services-create[]
+
+== Architecture
+plantuml::{includedir}/components.puml[,,format=svg]
+
+=== Shared
+plantuml::{includedir}/module-shared.puml[,,format=svg]
+include::{includedir}/module-shared.adoc[]
+
+=== Skill
+plantuml::{includedir}/module-skill.puml[,,format=svg]
+include::{includedir}/module-skill.adoc[]
+
+=== Service
+plantuml::{includedir}/module-service.puml[,,format=svg]
+include::{includedir}/module-service.adoc[]
+
+=== Company
+plantuml::{includedir}/module-company.puml[,,format=svg]
+include::{includedir}/module-company.adoc[]

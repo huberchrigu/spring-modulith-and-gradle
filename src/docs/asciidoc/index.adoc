@@ -1,4 +1,4 @@
-== Spring Modulith and Gradle Application
+= Spring Modulith and Gradle Application
 :toc2:
 :includedir: ../../../build/spring-modulith-docs
 

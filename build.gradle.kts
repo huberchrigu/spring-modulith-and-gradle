@@ -1,3 +1,6 @@
+import org.asciidoctor.gradle.jvm.AsciidoctorTask
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
@@ -72,7 +75,9 @@ kotlin {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-tasks.asciidoctor {
+
+// Custom
+tasks.withType<AsciidoctorTask> {
     dependsOn(tasks.test)
     baseDirFollowsSourceFile()
     asciidoctorj {

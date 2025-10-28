@@ -1,5 +1,5 @@
+import org.asciidoctor.gradle.jvm.AsciidoctorTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.gradle.api.tasks.testing.Test
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -77,18 +77,22 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-tasks.withType<BootJar> {
-    enabled = false
-}
-
-tasks.test {
     outputs.dir(project.extra["snippetsDir"]!!)
 }
 
-tasks.asciidoctor {
+// Custom
+tasks.withType<BootJar> {
+    enabled = false
+}
+tasks.withType<AsciidoctorTask> {
+    dependsOn(tasks.test)
+    baseDirFollowsSourceFile()
     configurations("asciidoctorExt")
     inputs.dir(project.extra["snippetsDir"]!!)
-    dependsOn(tasks.test)
+    asciidoctorj {
+        modules {
+            diagram.use()
+            diagram.setVersion("2.3.2")
+        }
+    }
 }
