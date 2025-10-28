@@ -1,5 +1,4 @@
 import org.asciidoctor.gradle.jvm.AsciidoctorTask
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
