@@ -73,25 +73,12 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 tasks.asciidoctor {
-    dependsOn(tasks.test, project(":hr").tasks.test, project(":portfolio").tasks.test)
-    baseDirFollowsSourceDir()
-    attributes(
-        mapOf(
-            "hr" to project(":hr")
-                .layout.buildDirectory
-                .dir("spring-modulith-docs")
-                .get()
-                .asFile,
-            "portfolio" to project(":portfolio")
-                .layout.buildDirectory
-                .dir("spring-modulith-docs")
-                .get()
-                .asFile
-        )
-    )
-}
-asciidoctorj {
-    modules {
-        diagram.use()
+    dependsOn(tasks.test)
+    baseDirFollowsSourceFile()
+    asciidoctorj {
+        modules {
+            diagram.use()
+            diagram.setVersion("2.3.2")
+        }
     }
 }
