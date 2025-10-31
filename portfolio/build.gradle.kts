@@ -96,3 +96,9 @@ tasks.withType<AsciidoctorTask> {
         }
     }
 }
+tasks.withType<Jar> {
+    dependsOn(tasks.asciidoctor)
+    from("build/docs/asciidoc") {
+        into("static/docs/portfolio")
+    }
+}

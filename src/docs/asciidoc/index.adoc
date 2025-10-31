@@ -18,3 +18,5 @@ include::{includedir}/module-hr.adoc[]
 
 plantuml::{includedir}/module-portfolio.puml[,,format=svg]
 include::{includedir}/module-portfolio.adoc[]
+
+link:portfolio/index.html[Portfolio API and architecture]

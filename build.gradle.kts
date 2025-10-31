@@ -1,4 +1,5 @@
 import org.asciidoctor.gradle.jvm.AsciidoctorTask
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -84,5 +85,11 @@ tasks.withType<AsciidoctorTask> {
             diagram.use()
             diagram.setVersion("2.3.2")
         }
+    }
+}
+tasks.withType<BootJar> {
+    dependsOn(tasks.asciidoctor)
+    from("build/docs/asciidoc") {
+        into("static/docs")
     }
 }

@@ -28,6 +28,7 @@ class SpringModulithAndGradleApplicationTests(private val webTestClient: WebTest
             """.trimIndent()
             )
             .exchange()
+            .expectStatus().isCreated
             .expectBody()
             .jsonPath("id").isNotEmpty
             .jsonPath("requiredSkills").value<List<String>> { assertThat(it).containsExactly(data.knowHow.id.toString()) }
